@@ -1,5 +1,40 @@
 # NKI Llama
 
+## 2025-04-16
+### About
+This repository contains optimized kernels developed for [the ASPLOS/EuroSys 2025 Contest Track on an Optimized Neuron Kernel Interface (NKI) Implementation of Llama 3.2 1B (inference)](https://github.com/asplos-contest/2025/blob/main/OPTNKI.md), sponsored by Amazon Web Services.
+
+### Source Attribution
+- Original file from [aws-samples/NKI-Llama](https://github.com/aws-samples/nki-llama/blob/main/README.md) under Apache License 2.0.
+- Some functions and implementation details are adapted from [AWS Neuron documentation](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/index.html)
+- This work is not an official AWS product, but was developed independently for the contest.
+
+### Score
+- This work achieved **🥉3rd place finish** in the contest.
+- The final Score achieved is **8.47891801156652**, measured at sequence length 640.  
+- To reproduce this result, run:  
+  ```bash
+  python main.py --enable-nki --mode evaluate_all --seq-len 640
+
+### Key Modifications
+1. **Replacing `torch.matmul` with NKI-based kernels**  
+   - Integrated NKI on Trainium hardware to handle matrix multiplication in both Group Query Attention and MLP components.  
+   - Dynamically switches to an NKI-based matmul when the arithmetic intensity exceeds **222 FLOPs per byte**, as recommended by the [NKI matmul documentation](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/api/generated/nki.language.matmul.html).
+
+2. **Kernel fusion to reduce overhead**  
+   - Fused multiple NKI kernel calls into a single kernel call in both GQA and MLP layers to minimize kernel call overhead and memory transfer overhead.
+
+3. **Variable Prompt Length Support**  
+   - Modified the code to handle sequence lengths of 64, 128, 256, and 640.
+
+4. **Batch Size Support**  
+   - Confirmed that batch sizes of 1 through 4 are supported with the same NKI matmul logic.
+   - Preload & reuse MLP weights across batches to further boost throughput.
+
+### 
+
+All changes made by Corelab, Yonsei University.
+
 📢 Contestants, please note that we have updated the due date to March 10, anywhere on Earth. This is to allow for more time to address questions about benchmarking, which is both the purpose of the competition and core to the success metric. 
 
 ## Getting Started
