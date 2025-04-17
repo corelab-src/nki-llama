@@ -19,7 +19,7 @@ This repository contains optimized kernels developed for [the ASPLOS/EuroSys 202
 ### Key Modifications
 1. **Replacing `torch.matmul` with NKI-based kernels**  
    - Integrated NKI on Trainium hardware to handle matrix multiplication in both Group Query Attention and MLP components.  
-   - Dynamically switches to an NKI-based matmul when the arithmetic intensity exceeds **222 FLOPs per byte**, as recommended by the [NKI matmul documentation](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/api/generated/nki.language.matmul.html).
+   - Dynamically switches to an NKI-based matmul when the arithmetic intensity exceeds **222 FLOPs per byte**, as recommended by the [NKI matmul documentation](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/tutorials/matrix_multiplication.html).
 
 2. **Kernel fusion to reduce overhead**  
    - Fused multiple NKI kernel calls into a single kernel call in both GQA and MLP layers to minimize kernel call overhead and memory transfer overhead.
